@@ -1,4 +1,4 @@
-package entities;
+package ru.yajaneya.SpringFM1GeekbrainsDz7.entities;
 
 import javax.persistence.*;
 

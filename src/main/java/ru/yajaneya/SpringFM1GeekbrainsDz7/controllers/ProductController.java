@@ -41,12 +41,12 @@ public class ProductController {
 
     @GetMapping("/products/min")
     public List<Product> getProductsUpByMin (@RequestParam (defaultValue = "0") Integer min) {
-        return productService.findAllByPriceGreaterThan(min);
+        return productService.findAllByPriceBetween(min, 2147483647);
     }
 
     @GetMapping("/products/max")
     public List<Product> getProductsDownByMax (@RequestParam (defaultValue = "100000") Integer max) {
-        return productService.findAllByPriceLessThan(max);
+        return productService.findAllByPriceBetween(0, max);
     }
 
     @GetMapping("/products/between")

@@ -19,6 +19,27 @@
 
     <h3>Товары</h3>
 
+    <h5>Поиск по минимальной и/или максимальной цене</h5>
+
+    <form ng-submit="getMinMaxPrice()">
+
+        <table class="table table-hover">
+            <tr>
+                <td>
+                    <input class="form-control" type="number" placeholder="Минимум" ng-model="min">
+                </td>
+                <td>
+                    <input class="form-control" type="number" placeholder="Максимум" ng-model="max">
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-primary">Отобразить</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <h5>Список товаров</h5>
+
     <table class="table table-hover">
         <tr>
             <td>Id</td>

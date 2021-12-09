@@ -6,7 +6,7 @@ angular.module('webapp', []).controller('indexController', function($scope, $htt
     $scope.getMinMaxPrice = function () {
 
         $http({
-            url: contextPath + '/products/between/page',
+            url: contextPath + '/api/v1/products/',
             method: 'GET',
             params: {
                 min_price: $scope.min_price,

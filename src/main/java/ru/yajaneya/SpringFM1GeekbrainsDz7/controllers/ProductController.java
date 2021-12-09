@@ -2,16 +2,14 @@ package ru.yajaneya.SpringFM1GeekbrainsDz7.controllers;
 
 
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.entities.Product;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.services.ProductService;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
     private ProductService productService;
@@ -20,18 +18,8 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/product/{id}")
-    public Product getProductById (@PathVariable Long id) {
-        return productService.findByID(id).get();
-    }
-
-    @GetMapping("/products")
-    public List<Product> getProducts () {
-        return productService.findAll();
-    }
-
-    @GetMapping("/products/between/page")
-    public Page<Product> getBetweenPage
+    @GetMapping
+    public Page<Product> getProducts
             (@RequestParam (defaultValue = "1") Integer page,
              @RequestParam (name = "min_price", required = false) Integer minPrice,
              @RequestParam (name = "max_price", required = false) Integer maxPrice) {
@@ -49,7 +37,23 @@ public class ProductController {
         return productService.find(minPrice, maxPrice, page);
     }
 
-    @GetMapping("/product/delete/{id}")
+    @GetMapping("/{id}")
+    public Product getProductById (@PathVariable Long id) {
+        return productService.findByID(id).get();
+    }
+
+    @PostMapping
+    public Product saveNewProduct (@RequestBody Product product) {
+        product.setId(null);
+        return productService.save(product);
+    }
+
+    @PutMapping
+    public Product updateProducrt (@RequestBody Product product) {
+        return productService.save(product);
+    }
+
+    @DeleteMapping("/{id}")
     public void delProduct (@PathVariable Long id) {
         productService.delById(id);
     }

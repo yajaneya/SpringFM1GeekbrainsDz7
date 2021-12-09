@@ -3,6 +3,7 @@ package ru.yajaneya.SpringFM1GeekbrainsDz7.controllers;
 
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import ru.yajaneya.SpringFM1GeekbrainsDz7.dto.ProductDto;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.entities.Product;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.services.ProductService;
 
@@ -19,7 +20,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public Page<Product> getProducts
+    public Page<ProductDto> getProducts
             (@RequestParam (defaultValue = "1") Integer page,
              @RequestParam (name = "min_price", required = false) Integer minPrice,
              @RequestParam (name = "max_price", required = false) Integer maxPrice) {
@@ -34,23 +35,27 @@ public class ProductController {
             page = totalPages;
         }
 
-        return productService.find(minPrice, maxPrice, page);
+        return productService.find(minPrice, maxPrice, page).map(ProductDto::new);
     }
 
     @GetMapping("/{id}")
-    public Product getProductById (@PathVariable Long id) {
-        return productService.findByID(id).get();
+    public ProductDto getProductById (@PathVariable Long id) {
+        return new ProductDto(productService.findByID(id).get());
     }
 
     @PostMapping
-    public Product saveNewProduct (@RequestBody Product product) {
+    public ProductDto saveNewProduct (@RequestBody ProductDto productDto) {
+        Product product = new Product(productDto);
         product.setId(null);
-        return productService.save(product);
+        product = productService.save(product);
+        return new ProductDto(product);
     }
 
     @PutMapping
-    public Product updateProducrt (@RequestBody Product product) {
-        return productService.save(product);
+    public ProductDto updateProducrt (@RequestBody ProductDto productDto) {
+        Product product = new Product(productDto);
+        product = productService.save(product);
+        return new ProductDto(product);
     }
 
     @DeleteMapping("/{id}")

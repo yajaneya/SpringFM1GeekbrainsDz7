@@ -3,8 +3,12 @@ package ru.yajaneya.SpringFM1GeekbrainsDz7.services;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.entities.Product;
 import org.springframework.stereotype.Service;
+import ru.yajaneya.SpringFM1GeekbrainsDz7.exceptions.AppError;
+import ru.yajaneya.SpringFM1GeekbrainsDz7.exceptions.ResourceNotFoundException;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.repositories.ProductRepository;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.repositories.specifications.ProductSpecifications;
 
@@ -35,7 +39,7 @@ public class ProductService {
     }
 
     public Optional<Product> findByID (Long id) {
-        return productRepository.findById(id);
+        return Optional.ofNullable(productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product id=" + id + " not found")));
     }
 
     public Product save (Product product) {

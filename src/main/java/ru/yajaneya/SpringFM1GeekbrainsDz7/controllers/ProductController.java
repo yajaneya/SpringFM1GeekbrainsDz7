@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.services.ProductService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,6 +35,22 @@ public class ProductController {
         return productService.findAll();
     }
 
+    @GetMapping("/products/between/page")
+    public List<Product> getBetweenPage (@RequestParam (defaultValue = "1") Integer page, @RequestParam (defaultValue = "0") Integer min, @RequestParam (defaultValue = "100000") Integer max) {
+        List<Product> products = productService.findAllByPriceBetween(min, max);
+        List<Product> productsOut = new ArrayList<>();
+        if (page < 1) {
+            page = 1;
+        }
+        int start = Math.min((page - 1) * 10, products.size());
+        int finish = Math.min((page - 1) * 10 + 10, products.size());
+        for (int i = start; i < finish; i++) {
+            productsOut.add(products.get(i));
+        }
+        productsOut.forEach(System.out::println);
+        return productsOut;
+    }
+
     @GetMapping("/product/delete/{id}")
     public void delProduct (@PathVariable Long id) {
         productService.delById(id);
@@ -41,12 +58,12 @@ public class ProductController {
 
     @GetMapping("/products/min")
     public List<Product> getProductsUpByMin (@RequestParam (defaultValue = "0") Integer min) {
-        return productService.findAllByPriceGreaterThan(min);
+        return productService.findAllByPriceBetween(min, 2147483647);
     }
 
     @GetMapping("/products/max")
     public List<Product> getProductsDownByMax (@RequestParam (defaultValue = "100000") Integer max) {
-        return productService.findAllByPriceLessThan(max);
+        return productService.findAllByPriceBetween(0, max);
     }
 
     @GetMapping("/products/between")

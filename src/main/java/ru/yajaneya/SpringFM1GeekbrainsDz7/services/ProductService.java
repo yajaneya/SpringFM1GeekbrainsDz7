@@ -28,13 +28,6 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public List<Product> findAllByPriceGreaterThan (Integer min) {
-        return productRepository.findAllByPriceGreaterThan(min);
-    }
-
-    public List<Product> findAllByPriceLessThan (Integer max) {
-        return productRepository.findAllByPriceLessThan(max);
-    }
     public List<Product> findAllByPriceBetween (Integer min, Integer max) {
         return productRepository.findAllByPriceBetween(min, max);
     }

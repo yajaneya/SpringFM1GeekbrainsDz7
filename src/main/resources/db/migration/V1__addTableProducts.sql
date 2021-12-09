@@ -21,4 +21,5 @@ values
 ('Grape', 105),
 ('Cheese', 515),
 ('Butter', 650),
-('Steak', 555);
+('Steak', 555),
+('Plum', 74);

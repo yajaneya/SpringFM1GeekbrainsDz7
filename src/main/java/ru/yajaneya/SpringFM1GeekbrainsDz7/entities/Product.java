@@ -1,5 +1,7 @@
 package ru.yajaneya.SpringFM1GeekbrainsDz7.entities;
 
+import ru.yajaneya.SpringFM1GeekbrainsDz7.dto.ProductDto;
+
 import javax.persistence.*;
 
 @Entity
@@ -18,6 +20,12 @@ public class Product {
     private int price;
 
     public Product() {
+    }
+
+    public Product(ProductDto productDto) {
+        this.id = productDto.getId();
+        this.name = productDto.getName();
+        this.price = productDto.getPrice();
     }
 
     public Long getId() {

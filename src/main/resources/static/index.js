@@ -3,7 +3,7 @@ angular.module('webapp', []).controller('indexController', function($scope, $htt
 
     $scope.page = 1;
 
-    $scope.getMinMaxPrice = function () {
+    $scope.loadProducts = function () {
 
         $http({
             url: contextPath + '/api/v1/products/',
@@ -19,6 +19,6 @@ angular.module('webapp', []).controller('indexController', function($scope, $htt
         });
     };
 
-    $scope.getMinMaxPrice();
+    $scope.loadProducts();
 
 });

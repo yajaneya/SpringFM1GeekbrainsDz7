@@ -1,23 +1,24 @@
 package ru.yajaneya.SpringFM1GeekbrainsDz7.controllers;
 
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import ru.yajaneya.SpringFM1GeekbrainsDz7.converters.ProductConverter;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.dto.ProductDto;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.entities.Product;
+import ru.yajaneya.SpringFM1GeekbrainsDz7.exceptions.ResourceNotFoundException;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.services.ProductService;
-
-import java.util.List;
+import ru.yajaneya.SpringFM1GeekbrainsDz7.validators.ProductValidator;
 
 @RestController
 @RequestMapping("/api/v1/products")
+@RequiredArgsConstructor
 public class ProductController {
 
-    private ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
+    private final ProductService productService;
+    private final ProductConverter productConverter;
+    private final ProductValidator productValidator;
 
     @GetMapping
     public Page<ProductDto> getProducts
@@ -28,39 +29,41 @@ public class ProductController {
         if (page < 1) {
             page=1;
         }
-
-        int totalPages = productService.find(minPrice, maxPrice, page).getTotalPages();
-
+        int totalPages = productService.findAll(minPrice, maxPrice, page).getTotalPages();
         if (page > totalPages) {
             page = totalPages;
         }
 
-        return productService.find(minPrice, maxPrice, page).map(ProductDto::new);
+        return productService.findAll(minPrice, maxPrice, page)
+                .map(productConverter::entityToDto);
     }
 
     @GetMapping("/{id}")
     public ProductDto getProductById (@PathVariable Long id) {
-        return new ProductDto(productService.findByID(id).get());
+        Product product = productService.findByID(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Продукт с id = " + id + " не найден."));
+        return productConverter.entityToDto(product);
     }
 
     @PostMapping
     public ProductDto saveNewProduct (@RequestBody ProductDto productDto) {
-        Product product = new Product(productDto);
+        productValidator.validate(productDto);
+        Product product = productConverter.dtoToEntity(productDto);
         product.setId(null);
         product = productService.save(product);
-        return new ProductDto(product);
+        return productConverter.entityToDto(product);
     }
 
     @PutMapping
-    public ProductDto updateProducrt (@RequestBody ProductDto productDto) {
-        Product product = new Product(productDto);
-        product = productService.save(product);
-        return new ProductDto(product);
+    public ProductDto updateProduct(@RequestBody ProductDto productDto) {
+        productValidator.validate(productDto);
+        Product product = productService.update(productDto);
+        return productConverter.entityToDto(product);
     }
 
     @DeleteMapping("/{id}")
     public void delProduct (@PathVariable Long id) {
-        productService.delById(id);
+        productService.deleteById(id);
     }
 
 }

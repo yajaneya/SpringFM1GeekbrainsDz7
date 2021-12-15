@@ -31,7 +31,7 @@ public class ProductService {
         if (maxPrice != null) {
             spec = spec.and(ProductSpecifications.priceLessOrEqualsThan(maxPrice));
         }
-        return productRepository.findAll(spec, PageRequest.of(page - 1, 10));
+        return productRepository.findAll(spec, PageRequest.of(page - 1, 5));
     }
 
     public Optional<Product> findByID (Long id) {

@@ -57,11 +57,39 @@
         <tbody>
         <tr ng-repeat="prod in ProductsList">
             <td>{{prod.id}}</td>
-            <td>{{prod.name}}</td>
+            <td>{{prod.title}}</td>
             <td>{{prod.price}}</td>
+            <td>
+                <button class="btn btn-primary" ng-click="toCart(prod.id, prod.title)">В корзину-></button>
+            </td>
         </tr>
         </tbody>
     </table>
+
+    <h5>Корзина, однако</h5>
+    <h6>Товаров на сумму {{sum}}</h6>
+
+    <table class="table table-hover">
+        <tr>
+            <td>Id</td>
+            <td>Наименование</td>
+            <td>Цена</td>
+            <td>Количество</td>
+        </tr>
+        <tbody>
+        <tr ng-repeat="c in Cart">
+            <td>{{c.id}}</td>
+            <td>{{c.title}}</td>
+            <td>{{c.price}}</td>
+            <td>
+                <button class="btn btn-primary" ng-click="minusQuantity(c.id)">-</button>
+                {{c.quantity}}
+                <button class="btn btn-primary" ng-click="plusQuantity(c.id)">+</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
 
 </div>
 

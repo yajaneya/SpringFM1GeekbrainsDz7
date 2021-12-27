@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.dto.JwtRequest;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.dto.JwtResponse;
+import ru.yajaneya.SpringFM1GeekbrainsDz7.entities.User;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.exceptions.AppError;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.services.UserService;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.utils.JwtTokenUtil;
@@ -24,7 +25,21 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/auth")
-    public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest authRequest) {
+    public ResponseEntity<?> authorization(@RequestBody JwtRequest authRequest) {
+        return createAuthToken(authRequest, "auth");
+    }
+
+    @PostMapping("/reg")
+    public ResponseEntity<?> registration(@RequestBody JwtRequest authRequest) {
+        User user = new User();
+        user.setUsername(authRequest.getUsername());
+        user.setPassword(authRequest.getPassword());
+        userService.save(user); //TODO сделать проверку на наличие такого пользователя в базе и отправку инфы об ошибке
+        return createAuthToken(authRequest, "reg");
+    }
+
+
+    private ResponseEntity<?> createAuthToken(JwtRequest authRequest, String m) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken
                     (authRequest.getUsername(), authRequest.getPassword()));

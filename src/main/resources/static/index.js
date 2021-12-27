@@ -22,6 +22,20 @@ angular.module('webapp', ['ngStorage']).controller('indexController', function($
             });
     };
 
+    $scope.tryToReg = function () {
+        $http.post('http://localhost:8189/app/reg', $scope.regUser)
+            .then(function successCallback(response) {
+                if (response.data.token) {
+                    $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
+                    $localStorage.springWebUser = {username: $scope.regUser.username, token: response.data.token};
+
+                    $scope.regUser.username = null;
+                    $scope.regUser.password = null;
+                }
+            }, function errorCallback(response) {
+           });
+    };
+
     $scope.tryToLogout = function () {
         $scope.clearUser();
         if ($scope.user.username) {

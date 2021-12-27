@@ -1,5 +1,6 @@
 package ru.yajaneya.SpringFM1GeekbrainsDz7.services;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.entities.Role;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.entities.User;
 import ru.yajaneya.SpringFM1GeekbrainsDz7.repositories.UserRepository;
@@ -12,7 +13,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -20,9 +23,21 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final RoleService roleService;
 
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    public User save (User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        Role role = roleService.findByName("ROLE_USER").get(); //TODO сделать назначение выбираемой роли и проверку на наличие роли в таблице
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+        user.setRoles(roles);
+
+        return userRepository.save(user);
     }
 
     @Override
